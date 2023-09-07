@@ -10,7 +10,7 @@
 
     {{-- Title --}}
     <div class="col-8">
-        <div class="mb-3">
+        <div class="my-4">
             <label for="title" class="form-label">Title</label>
             <input type="text"
                 class="form-control @error('title') is-invalid @elseif(old('title')) is-valid @enderror"
@@ -25,7 +25,7 @@
 
     {{-- Type --}}
     <div class="col-4">
-        <div class="mb-3">
+        <div class="my-4">
             <label for="type" class="form-label">Type</label>
             <select class="form-select" id="type" name="type_id"
                 @error('type_id') is-invalid @elseif(old('type_id')) is-valid @enderror>
@@ -46,7 +46,7 @@
 
     {{-- Cover --}}
     <div class="col-12">
-        <div class="mb-3">
+        <div class="my-4">
             <label for="image" class="form-label">Cover</label>
             <input type="file"
                 class="form-control @error('cover') is-invalid @elseif(old('cover')) is-valid @enderror"
@@ -61,10 +61,10 @@
 
     {{-- Description --}}
     <div class="col-12">
-        <div class="mb-3">
+        <div class="my-4">
             <label for="description" class="form-label">Description</label>
             <textarea class="form-control @error('description') is-invalid @elseif(old('description')) is-valid @enderror"
-                name="description" id="description" rows="15">{{ old('description', $project->description) }}</textarea>
+                name="description" id="description" rows="10">{{ old('description', $project->description) }}</textarea>
             @error('description')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -74,7 +74,7 @@
     </div>
 
     <div class="col-12 text-end mt-3">
-        <button class="btn btn-success" type="submit">Save</button>
+        <button class="btn btn-success mb-4" type="submit">Save</button>
     </div>
 
 </div>
