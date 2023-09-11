@@ -12,8 +12,8 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Title</th>
-                <th scope="col">Type</th>
                 <th scope="col">Created at</th>
+                <th scope="col">Updated at</th>
             </tr>
         </thead>
         <tbody>
@@ -21,8 +21,9 @@
                 <tr>
                     <th scope="row">{{ $project->id }}</th>
                     <td>{{ $project->title }}</td>
-                    <td>{{ $project->type?->label }}</td>
-                    <td>{{ $project->created_at }}</td>
+                    {{-- <td>{{ $project->type?->label }}</td> --}}
+                    <td>{{ $project->getCreatedAt() }}</td>
+                    <td>{{ $project->getUpdatedAt() }}</td>
                     {{-- buttons --}}
                     <td>
                         <div class="d-flex justify-content-between">

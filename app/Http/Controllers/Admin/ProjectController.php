@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Technology;
 use App\Models\Type;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -27,7 +29,9 @@ class ProjectController extends Controller
     {
         $project = new Project();
         $types = Type::select('id', 'label')->get();
-        return view('admin.projects.create', compact('project', 'types'));
+        $technologies = Technology::select('id', 'label')->get();
+
+        return view('admin.projects.create', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -40,7 +44,8 @@ class ProjectController extends Controller
                 'title' => 'required|string|max:50',
                 'description' => 'nullable|string',
                 'cover' => 'nullable|image:jpeg,jpg,png',
-                'type_id' => 'nullable|exists:types,id'
+                'type_id' => 'nullable|exists:types,id',
+                'technologies' => 'nullable|exists:technologies,id'
             ]
         );
 
@@ -56,6 +61,8 @@ class ProjectController extends Controller
 
         $project->fill($data);
         $project->save();
+
+        if (array_key_exists('technologies', $data)) $project->technologies()->attach($data['technologies']);
 
         return to_route('admin.projects.index')
             ->with('alert-type', 'success')
@@ -76,7 +83,10 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::select('id', 'label')->get();
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::select('id', 'label')->get();
+        $project_technology_ids = $project->technologies->pluck('id')->toArray();
+
+        return view('admin.projects.edit', compact('project', 'types', 'technologies', 'project_technology_ids'));
     }
 
     /**
@@ -89,7 +99,8 @@ class ProjectController extends Controller
                 'title' => 'required|string|max:50',
                 'description' => 'nullable|string',
                 'cover' => 'nullable|image:jpeg,jpg,png',
-                'type_id' => 'nullable|exists:types,id'
+                'type_id' => 'nullable|exists:types,id',
+                'technologies' => 'nullable|exists:technologies,id'
             ]
         );
 
@@ -102,6 +113,10 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+
+        if (!Arr::exists($data, 'technologies') && count($project->technologies)) $project->technologies()->detach();
+        elseif (Arr::exists($data, 'technologies')) $project->technologies()->sync($data['technologies']);
+
         return to_route('admin.projects.show', $project)
             ->with('alert-type', 'success')
             ->with('alert-message', "$project->title updated with success");
